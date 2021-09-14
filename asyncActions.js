@@ -2,6 +2,7 @@ const redux = require('redux')
 const createStore = redux.createStore
 const applyMiddleware = redux.applyMiddleware
 const thunkMiddleware = require('redux-thunk').default
+const axios = require('axios')
 
 const initialState = {
     loading: false,
@@ -33,7 +34,7 @@ const fetchUsersFailure = error => {
     }
 }
 
-const reducer = (state = intitialState, action) => {
+const reducer = (state = initialState, action) => {
     switch(action.type) {
         case FETCH_USERS_REQUEST:
             return {
@@ -48,7 +49,7 @@ const reducer = (state = intitialState, action) => {
                 error: ''
             }
 
-        case FETCH_USERS_ERROR:
+        case FETCH_USERS_FAILURE:
             return {
                 loading: false,
                 users: [],
@@ -57,4 +58,20 @@ const reducer = (state = intitialState, action) => {
     }
 }
 
-const store = createStore(reducer, applyMiddleware())
+const fetchUsers = () => {
+    return function(dispatch) {
+        dispatch(fetchUsersRequest())
+        axios.get('https://jsonplacehlder.typicode.com/users')
+            .then(response => {
+                const users = response.data.map(user => user.id)
+                dispatch(fetchUsersSuccess(users))
+            })
+            .catch(error => {
+                dispatch(fetchUsersFailure(error.message))
+            })
+    }
+}
+
+const store = createStore(reducer, applyMiddleware(thunkMiddleware))
+store.subscribe(() => {console.log(store.getState())})
+store.dispatch(fetchUsers())
