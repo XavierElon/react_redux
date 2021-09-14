@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/XavierElon1/react_redux#readme",
   "dependencies": {
+    "axios": "^0.21.4",
     "redux": "^4.1.1",
     "redux-logger": "^3.0.6"
   }

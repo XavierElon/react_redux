@@ -23,7 +23,6 @@ function buyIceCream() {
     }
 }
 
-
 // Reducer function
 // (previousState, action) => newState
 // const initialState = {
